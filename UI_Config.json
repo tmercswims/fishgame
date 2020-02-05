@@ -1,0 +1,170 @@
+{
+    "output_file": "settings.json",
+    "start_command": {
+        "label": "Start Command",
+        "tooltip": "The command to start the fish game.",
+        "type": "textbox",
+        "value": "!fishgame",
+        "group": "Start"
+    },
+    "start_permission": {
+        "label": "Start Permission",
+        "tooltip": "Who is allowed to start the fish game.",
+        "type": "dropdown",
+        "value": "Moderator",
+        "items": ["Caster", "Moderator"],
+        "group": "Start"
+    },
+    "start_message": {
+        "label": "Start Message",
+        "tooltip": "The message the bot sends when the fish game starts. Customizations:\n{0} is the configured guess command.\n{1} is non-exact winner reward, including currency name, e.g. \"200 points\".\n{2} is the exact winner reward, including currency name.\n{3} is the highlight multiplier.",
+        "type": "textbox",
+        "value": "Yo we're about to do the fish minigame, guess how many fish I'll have by the end of the 3rd phase of fish by typing \"{0} <number>\" in chat! Closest guess wins {1}! Exact guess gets VIP until the next person guesses Exactly Right™ and {2}! If you HIGHLIGHT your guess, and you win, you get {3}x the rewards! (Recommended guess: 70-100)",
+        "group": "Start"
+    },
+    "guess_command": {
+        "label": "Guess Command",
+        "tooltip": "The command to place a guess during the fish game.",
+        "type": "textbox",
+        "value": "!guess",
+        "group": "Guess"
+    },
+    "guess_duration": {
+        "label": "Duration",
+        "tooltip": "How long viewers have to make guesses after the fish game starts, in seconds.",
+        "type": "numberbox",
+        "value": 75,
+        "group": "Guess"
+    },
+    "guess_nogame_toggle": {
+        "label": "Send No Active Game Message",
+        "tooltip": "If checked, the bot will provide feedback if a user does the guess command when there is no active game.",
+        "type": "checkbox",
+        "value": true,
+        "group": "Guess"
+    },
+    "guess_nogame_message": {
+        "label": "No Active Game Message",
+        "tooltip": "The message the bot sends if a user does the guess command when there is no active game. Customizations:\n{0} is the name of the user.",
+        "type": "textbox",
+        "value": "@{0} There is no active fish game.",
+        "group": "Guess"
+    },
+    "guess_toolate_toggle": {
+        "label": "Send Too Late to Guess Message",
+        "tooltip": "If checked, the bot will provide feedback if a user does the guess command after the time to guess is up.",
+        "type": "checkbox",
+        "value": true,
+        "group": "Guess"
+    },
+    "guess_toolate_message": {
+        "label": "Too Late to Guess Message",
+        "tooltip": "The message the bot sends if a user does the guess command after the time to guess is up. Customizations:\n{0} is the name of the user.\n{1} is the configured guess duration.",
+        "type": "textbox",
+        "value": "@{0} Sorry, you must place your guess within {1} seconds.",
+        "group": "Guess"
+    },
+    "guess_taken_message": {
+        "label": "Taken Guess Message",
+        "tooltip": "The message the bot sends if a user places a guess which has already been placed by another user. Customizations:\n{0} is the name of the user.\n{1} is the guess.",
+        "type": "textbox",
+        "value": "@{0} Someone else already guessed {1}. Yours has been recorded, but you might want to change it.",
+        "group": "Guess"
+    },
+    "end_command": {
+        "label": "End Command",
+        "tooltip": "The command to end the fish game and give rewards.",
+        "type": "textbox",
+        "value": "!endfish",
+        "group": "End"
+    },
+    "end_permission": {
+        "label": "End Permission",
+        "tooltip": "Who is allowed to end the fish game.",
+        "type": "dropdown",
+        "value": "Moderator",
+        "items": ["Caster", "Moderator"],
+        "group": "End"
+    },
+    "end_nogame_message": {
+        "label": "No Active Game Message",
+        "tooltip": "The message the bot sends if a user does the end command when there is no active game. Customizations:\n{0} is the name of the user.",
+        "type": "textbox",
+        "value": "@{0} There is no active fish game.",
+        "group": "End"
+    },
+    "end_tie_message": {
+        "label": "End Tie Message",
+        "tooltip": "The message the bot sends at the end of the game if there is a tie. Customizations:\n{0} is the names of all of the tied users.\n{1} is how far from the real value they were.",
+        "type": "textbox",
+        "value": "We have a tie! {0} are {1} off. Rolling for tiebreaker.",
+        "group": "End"
+    },
+    "end_roll_message": {
+        "label": "End Roll Message",
+        "tooltip": "The message the bot sends at the end of the game if there is a tie when it rolls for each tying user. Customizations:\n{0} is the name of the user.\n{1} is their roll.",
+        "type": "textbox",
+        "value": "@{0} rolled a {1}!",
+        "group": "End"
+    },
+    "end_winner_message": {
+        "label": "End Winner Message",
+        "tooltip": "The message the bot sends when the game is over, notifying everyone of the winner. Customizations:\n{0} is the name of the winning user.\n{1} is their guess.\n{2} is the real value.\n{3} is how much currency they won, including the currency name, e.g. \"200 points\".",
+        "type": "textbox",
+        "value": "The fish game is over, with a phase 3 score of {2}. The winner is @{0}, with a guess of {1}! They have been awarded {3}.",
+        "group": "End"
+    },
+    "end_vip_message": {
+        "label": "End VIP Message",
+        "tooltip": "The message the bot sends when the game is over in the case where the winner guessed exactly, informing the broadcaster who needs to be given VIP. Customizations:\n{0} is the name of the winning user.\n{1} is the name of the previous winner, and might be nothing.\n{2} is the broadcaster's name.",
+        "type": "textbox",
+        "value": "@{2}, @{0} just guessed exactly and needs to be given VIP! The previous exact winner who should lose VIP is @{1}.",
+        "group": "End"
+    },
+    "end_same_vip_message": {
+        "label": "End Same VIP Message",
+        "tooltip": "The message the bot sends when the game is over in the case where the winner guessed exactly, but it is the same user who already has VIP. Customizations:\n{0} is the name of the winning user.",
+        "type": "textbox",
+        "value": "@{0} just guessed exactly, but they already have VIP from last time, so we're all good.",
+        "group": "End"
+    },
+    "reward_nonexact": {
+        "label": "Non-exact Winner Reward",
+        "tooltip": "How much currency will be given to a winner who does not guess the exact number of fish.",
+        "type": "numberbox",
+        "value": 200,
+        "group": "Reward"
+    },
+    "reward_exact": {
+        "label": "Exact Winner Reward",
+        "tooltip": "How much currency will be given to a winner who guesses the exact number of fish.",
+        "type": "numberbox",
+        "value": 400,
+        "group": "Reward"
+    },
+    "reward_bonus_multiplier": {
+        "label": "Highlighted Guess Multiplier",
+        "tooltip": "The multiplier to apply to rewards for winners who highlighted their guess message.",
+        "type": "slider",
+        "value": 3,
+        "min": 1,
+        "max": 10,
+        "ticks": 1,
+        "group": "Reward"
+    },
+    "only_live": {
+        "label": "Only When Live",
+        "tooltip": "If checked, commands are only active when stream is live.",
+        "type": "checkbox",
+        "value": false,
+        "group": "Other"
+    },
+    "reset_defaults": {
+        "type": "button",
+        "label": "Restore Default Settings",
+        "tooltip": "Restores all settings to their default values.",
+        "function": "RestoreSettings",
+        "wsevent": "",
+        "group": ""
+    },
+}
