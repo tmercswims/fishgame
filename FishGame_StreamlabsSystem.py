@@ -23,7 +23,7 @@ ScriptName = "Fish Game"
 Website = "https://github.com/tmercswims"
 Description = "Jak and Daxter fish game."
 Creator = "tmerc"
-Version = "1.0.0"
+Version = "1.0.1"
 
 
 #---------------------------
@@ -256,7 +256,7 @@ def Execute(data):
             }
             return
 
-        if data.GetParam(0).lower() == settings.end_command.lower():
+        if data.GetParam(0).lower() == settings.end_command.lower() and Parent.HasPermission(data.User, settings.end_permission.lower(), ""):
             # end command
             if data.GetParamCount() < 2:
                 # no argument provided
