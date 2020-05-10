@@ -17,9 +17,9 @@
     },
     "start_message": {
         "label": "Start Message",
-        "tooltip": "The message the bot sends when the fish game starts. Customizations:\n{0} is the configured guess command.\n{1} is non-exact winner reward, including currency name, e.g. \"200 points\".\n{2} is the exact winner reward, including currency name.\n{3} is the highlight multiplier.",
+        "tooltip": "The message the bot sends when the fish game starts. Customizations:\n{0} is the configured guess command.\n{1} is non-exact winner reward, including currency name, e.g. \"200 points\".\n{2} is the exact winner reward, including currency name.\n{3} is the highlight multiplier.\n{4} is the recommended guess range, e.g. \"70-100\".",
         "type": "textbox",
-        "value": "Yo we're about to do the fish minigame, guess how many fish I'll have by the end of the 3rd phase of fish by typing \"{0} <number>\" in chat! Closest guess wins {1}! Exact guess gets VIP until the next person guesses Exactly Right™ and {2}! If you HIGHLIGHT your guess, and you win, you get {3}x the rewards! (Recommended guess: 70-100)",
+        "value": "Yo we're about to do the fish minigame, guess how many fish I'll have by the end of the 3rd phase of fish by typing \"{0} <number>\" in chat! Closest guess wins {1}! Exact guess gets VIP until the next person guesses Exactly Right™ and {2}! If you HIGHLIGHT your guess, and you win, you get {3}x the rewards! (Recommended guess: {4})",
         "group": "Start"
     },
     "guess_command": {
@@ -34,6 +34,20 @@
         "tooltip": "How long viewers have to make guesses after the fish game starts, in seconds.",
         "type": "numberbox",
         "value": 75,
+        "group": "Guess"
+    },
+    "guess_recommended_min": {
+        "label": "Recommended Minimum",
+        "tooltip": "The lower end of the recommended guess range.",
+        "type": "numberbox",
+        "value": 70,
+        "group": "Guess"
+    },
+    "guess_recommended_max": {
+        "label": "Recommended Maximum",
+        "tooltip": "The upper end of the recommended guess range.",
+        "type": "numberbox",
+        "value": 100,
         "group": "Guess"
     },
     "guess_nogame_toggle": {
@@ -69,6 +83,27 @@
         "tooltip": "The message the bot sends if a user places a guess which has already been placed by another user. Customizations:\n{0} is the name of the user.\n{1} is the guess.",
         "type": "textbox",
         "value": "@{0} Someone else already guessed {1}. Yours has been recorded, but you might want to change it.",
+        "group": "Guess"
+    },
+    "guess_forme_toggle": {
+        "label": "Allow \"Guess For Me\"",
+        "tooltip": "If checked, sending just the guess command with no guess is allowed. In that case, the user will be assigned a guess based on the recommended range.",
+        "type": "checkbox",
+        "value": true,
+        "group": "Guess"
+    },
+    "guess_forme_message": {
+        "label": "\"Guess For Me\" Response Message",
+        "tooltip": "The message the bot sends when a user elects to have the bot find a guess for them. Customizations:\n{0} is the name of the user.\n{1} is the guess.",
+        "type": "textbox",
+        "value": "@{0} Your guess is {1}.",
+        "group": "Guess"
+    },
+    "guess_forme_noneleft_message": {
+        "label": "\"Guess For Me\" No More Guesses Message",
+        "tooltip": "The message the bot sends when a user elects to have the bot find a guess for them, but every guess (0-200) is taken. Customizations:\n{0} is the name of the user.",
+        "type": "textbox",
+        "value": "@{0} Sorry, all guesses have been taken.",
         "group": "Guess"
     },
     "end_command": {
@@ -163,8 +198,8 @@
         "type": "button",
         "label": "Restore Default Settings",
         "tooltip": "Restores all settings to their default values.",
-        "function": "RestoreSettings",
+        "function": "restore_settings",
         "wsevent": "",
         "group": ""
-    },
+    }
 }
