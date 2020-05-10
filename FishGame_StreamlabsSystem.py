@@ -1,9 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-#---------------------------
+# ---------------------------
 # imports
-#---------------------------
+# ---------------------------
 import codecs
 import ctypes
 import json
@@ -16,9 +16,9 @@ clr.AddReference("IronPython.SQLite.dll")
 clr.AddReference("IronPython.Modules.dll")
 
 
-#---------------------------
+# ---------------------------
 # script information
-#---------------------------
+# ---------------------------
 ScriptName = "Fish Game"
 Website = "https://github.com/tmercswims"
 Description = "Jak and Daxter fish game."
@@ -26,9 +26,9 @@ Creator = "tmerc"
 Version = "1.0.1"
 
 
-#---------------------------
+# ---------------------------
 # helper classes
-#---------------------------
+# ---------------------------
 class Settings(object):
     """Keeps all settings for Fish Game."""
 
@@ -85,8 +85,14 @@ class Settings(object):
                 f.write("var settings = {0};".format(json.dumps(self.__dict__, encoding='utf-8')))
         except Exception as e:
             winsound.MessageBeep(winsound.MB_ICONHAND)
-            ctypes.windll.user32.MessageBoxW(0, "Failed to save settings. Check the script logs for more information.", "Saving Failed", 0)
+            ctypes.windll.user32.MessageBoxW(
+                0,
+                "Failed to save settings. Check the script logs for more information.",
+                "Saving Failed",
+                0
+            )
             Parent.Log(ScriptName, "Failed to save settings to file. " + str(e))
+
 
 class PreviousVIP(object):
     """Tracks the previous VIP, backed by a file."""
@@ -107,9 +113,9 @@ class PreviousVIP(object):
             f.write(username)
 
 
-#---------------------------
+# ---------------------------
 # global variables
-#---------------------------
+# ---------------------------
 global settings_file
 settings_file = ""
 global settings
@@ -128,9 +134,9 @@ global previous_vip
 previous_vip = None
 
 
-#---------------------------
+# ---------------------------
 # settings functions
-#---------------------------
+# ---------------------------
 def ReloadSettings(json_data):
     """Reload settings
 
@@ -165,9 +171,9 @@ def RestoreSettings():
         settings.Save(settings_file)
 
 
-#---------------------------
+# ---------------------------
 # required functions
-#---------------------------
+# ---------------------------
 def Init():
     """Initialize data
 
@@ -236,7 +242,7 @@ def Execute(data):
             try:
                 # parse guess
                 n = int(data.GetParam(1))
-            except:
+            except ValueError:
                 # silently fail
                 return
 
@@ -266,11 +272,10 @@ def Execute(data):
             try:
                 # number of fish
                 fish = int(data.GetParam(1))
-            except:
+            except ValueError:
                 # bad argument
                 Parent.SendStreamMessage("@{0} Usage: \"{1} <number>\"".format(data.UserName, settings.end_command))
                 return
-
 
             if state != 1:
                 # no active game
@@ -295,7 +300,6 @@ def Execute(data):
                     # find any other closest guess that's the same
                     same_guess = [ce for ce in closest_entries if ce["guess"] == entry["guess"]]
 
-
                     if len(same_guess) > 0:
                         # same guess
                         # remove these from the list for now - the winner will go back
@@ -306,7 +310,7 @@ def Execute(data):
                         same_guess.append(entry)
 
                         # find the oldest one in the pile
-                        first = min(same_guess, key = lambda x: x["when"])
+                        first = min(same_guess, key=lambda x: x["when"])
 
                         # put the oldest one back
                         closest_entries.append(first)
@@ -382,9 +386,9 @@ def Tick():
     pass
 
 
-#---------------------------
+# ---------------------------
 # optional functions
-#---------------------------
+# ---------------------------
 def Parse(parse_string, user_id, username, target_id, target_name, message):
     """Parse
 
