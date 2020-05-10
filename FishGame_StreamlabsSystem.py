@@ -81,7 +81,7 @@ class Settings(object):
 
             self.reward_nonexact = 200
             self.reward_exact = 400
-            self.reward_bonus_multiplier = 3
+            self.reward_bonus_multiplier = 3.0
 
             self.only_live = False
 
@@ -313,7 +313,7 @@ def do_start_command():
             settings.guess_command,
             add_currency_name(settings.reward_nonexact),
             add_currency_name(settings.reward_exact),
-            settings.reward_bonus_multiplier,
+            int(settings.reward_bonus_multiplier),
             "{0}-{1}".format(settings.guess_recommended_min, settings.guess_recommended_max)
         )
     )
@@ -458,7 +458,7 @@ def do_end_command(data):
     if closest_diff == 0:
         reward = settings.reward_exact
     if winner["bonus"]:
-        reward = reward * settings.reward_bonus_multiplier
+        reward = int(reward * settings.reward_bonus_multiplier)
 
     # give reward
     Parent.AddPoints(winner["data"].User, winner["data"].UserName, reward)

@@ -181,7 +181,7 @@
         "label": "Highlighted Guess Multiplier",
         "tooltip": "The multiplier to apply to rewards for winners who highlighted their guess message.",
         "type": "slider",
-        "value": 3,
+        "value": 3.0,
         "min": 1,
         "max": 10,
         "ticks": 1,
