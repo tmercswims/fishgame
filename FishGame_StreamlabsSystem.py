@@ -117,7 +117,7 @@ class PreviousVIP(object):
         if file_path is not None:
             try:
                 with codecs.open(file_path, encoding="utf-8-sig", mode="r") as f:
-                    self._username = f.readline()
+                    self._username = f.readline().strip()
             except IOError:
                 pass
 
@@ -127,7 +127,7 @@ class PreviousVIP(object):
 
     @username.setter
     def username(self, username):
-        self._username = username
+        self._username = username.strip()
 
         if self.file_path is not None:
             with codecs.open(self.file_path, encoding="utf-8-sig", mode="w+") as f:
@@ -291,7 +291,7 @@ def is_start_command(data):
     global settings
 
     return (data.GetParam(0).lower() == settings.start_command.lower()
-            and Parent.HasPermission(data.User, settings.start_permission.lower(), ""))
+            and has_permission(data.User, settings.start_permission))
 
 
 def do_start_command():
@@ -421,7 +421,7 @@ def is_end_command(data):
     """
 
     return (data.GetParam(0).lower() == settings.end_command.lower()
-            and Parent.HasPermission(data.User, settings.end_permission.lower(), ""))
+            and has_permission(data.User, settings.end_permission))
 
 
 def do_end_command(data):
@@ -470,14 +470,7 @@ def do_end_command(data):
 
     if closest_diff == 0:
         # send VIP message too
-        if winner["data"].UserName == previous_vip.username:
-            # same person guessed exactly again
-            Parent.SendStreamMessage(settings.end_same_vip_message.format(winner["data"].UserName))
-        else:
-            # a new person won
-            Parent.SendStreamMessage(settings.end_vip_message.format(winner["data"].UserName, previous_vip.username,
-                                                                     Parent.GetChannelName()))
-            previous_vip.username = winner["data"].UserName
+        send_vip_message(winner["data"])
 
     # reset
     game_state = 0
@@ -565,9 +558,60 @@ def break_tie(closest_entries, closest_diff):
     return closest_entries[0]
 
 
+def send_vip_message(winner_data):
+    """Figures out what do with this exact winner and sends the message."""
+
+    global previous_vip
+    global settings
+
+    winning_username = winner_data.UserName
+
+    if winning_username == previous_vip.username:
+        # same person guessed exactly again
+        Parent.SendStreamMessage(settings.end_same_vip_message.format(winning_username))
+        return
+
+    is_ineligible = False
+    # the first part of the message is about the new exact winner
+    if has_permission(winner_data.User, "moderator"):
+        # exact guesser is a mod
+        is_ineligible = True
+        first_part = settings.end_new_vip_message_mod.format(winning_username, Parent.GetChannelName())
+    elif has_permission(winner_data.User, "vip exclusive"):
+        # exact guesser is a VIP (and not the previous winner, that's checked before here)
+        is_ineligible = True
+        first_part = settings.end_new_vip_message_vip.format(winning_username, Parent.GetChannelName())
+    else:
+        first_part = settings.end_new_vip_message.format(winning_username, Parent.GetChannelName())
+
+    # the second part is about the previous exact winner
+    if previous_vip.username == "":
+        # we don't have a previous exact winner
+        second_part = ""
+        previous_vip.username = winning_username
+    else:
+        # we have a previous exact winner
+        if settings.end_new_vip_always_take_previous or not is_ineligible:
+            # we take the previous exact winner's VIP
+            second_part = settings.end_previous_vip_message_take.format(previous_vip.username)
+            previous_vip.username = winning_username
+        else:
+            # we don't take the previous exact winner's VIP
+            second_part = settings.end_previous_vip_message_keep.format(previous_vip.username)
+
+    spacer = " " if second_part != "" else ""
+    Parent.SendStreamMessage("{0}{1}{2}".format(first_part, spacer, second_part))
+
+
 # ---------------------------
 # utility functions
 # ---------------------------
+def has_permission(user, permission):
+    """Returns true if the user has the permission, false otherwise."""
+
+    return Parent.HasPermission(user, permission.lower(), "")
+
+
 def add_currency_name(amount):
     """Returns the provided amount with the currency name appended to it."""
 

@@ -149,18 +149,53 @@
         "value": "The fish game is over, with a phase 3 score of {2}. The winner is @{0}, with a guess of {1}! They have been awarded {3}.",
         "group": "End"
     },
-    "end_vip_message": {
-        "label": "End VIP Message",
-        "tooltip": "The message the bot sends when the game is over in the case where the winner guessed exactly, informing the broadcaster who needs to be given VIP. Customizations:\n{0} is the name of the winning user.\n{1} is the name of the previous winner, and might be nothing.\n{2} is the broadcaster's name.",
-        "type": "textbox",
-        "value": "@{2}, @{0} just guessed exactly and needs to be given VIP! The previous exact winner who should lose VIP is @{1}.",
-        "group": "End"
-    },
     "end_same_vip_message": {
         "label": "End Same VIP Message",
         "tooltip": "The message the bot sends when the game is over in the case where the winner guessed exactly, but it is the same user who already has VIP. Customizations:\n{0} is the name of the winning user.",
         "type": "textbox",
         "value": "@{0} just guessed exactly, but they already have VIP from last time, so we're all good.",
+        "group": "End"
+    },
+    "end_new_vip_message": {
+        "label": "End New VIP Message",
+        "tooltip": "The text the bot sends when the game is over in the case where the winner guessed exactly, informing the broadcaster who needs to be given VIP. The appropriate \"Previous VIP\" text is appended to this before it is sent. Customizations:\n{0} is the name of the winning user.\n{1} is the broadcaster's name.",
+        "type": "textbox",
+        "value": "@{1}, @{0} just guessed exactly and needs to be given VIP!",
+        "group": "End"
+    },
+    "end_new_vip_message_mod": {
+        "label": "End New VIP Message (Moderator)",
+        "tooltip": "The text the bot sends when the game is over in the case where the winner guessed exactly, but the winner is a moderator (who can't be given VIP). The appropriate \"Previous VIP\" text is appended to this before it is sent. Customizations:\n{0} is the name of the winning user.\n{1} is the broadcaster's name.",
+        "type": "textbox",
+        "value": "@{0} just guessed exactly, but they are a moderator and cannot be given VIP.",
+        "group": "End"
+    },
+    "end_new_vip_message_vip": {
+        "label": "End New VIP Message (VIP)",
+        "tooltip": "The text the bot sends when the game is over in the case where the winner guessed exactly, but the winner is already a VIP for other reasons, and can't be given it again. The appropriate \"Previous VIP\" text is appended to this before it is sent. Customizations:\n{0} is the name of the winning user.\n{1} is the broadcaster's name.",
+        "type": "textbox",
+        "value": "@{0} just guessed exactly, but they are already a VIP and cannot be given it again.",
+        "group": "End"
+    },
+    "end_new_vip_always_take_previous": {
+        "label": "Always Take Previous Exact Winner's VIP",
+        "tooltip": "If checked, the previous exact winner will always lose their VIP, even if someone like a moderator (who can't be given VIP) wins exactly.",
+        "type": "checkbox",
+        "value": true,
+        "group": "End"
+    },
+    "end_previous_vip_message_take": {
+        "label": "End Previous VIP Message (Take)",
+        "tooltip": "The text the bot sends when the game is over in the case where the winner guessed exactly, informing the broadcaster who guessed exactly previously and should lose VIP. This is appended to the appropriate \"New VIP\" text before it is sent. Customizations:\n{0} is the name of the previous user.",
+        "type": "textbox",
+        "value": "The previous exact winner who should lose VIP is @{0}.",
+        "group": "End"
+    },
+    "end_previous_vip_message_keep": {
+        "label": "End Previous VIP Message (Keep)",
+        "tooltip": "The text the bot sends when the game is over in the case where the winner guessed exactly, but the winner is someone like a moderator (who can't be given VIP), so the previous exact winner gets to keep their VIP. This is appended to the appropriate \"New VIP\" text before it is sent. Customizations:\n{0} is the name of the previous user.",
+        "type": "textbox",
+        "value": "The previous exact winner, @{0}, gets to keep VIP.",
         "group": "End"
     },
     "reward_nonexact": {
