@@ -21,7 +21,7 @@ clr.AddReference("IronPython.Modules.dll")
 # script information
 # ---------------------------
 ScriptName = "Fish Game"
-Website = "https://github.com/tmercswims"
+Website = "https://github.com/tmercswims/fishgame"
 Description = "Jak and Daxter fish game."
 Creator = "tmerc"
 Version = "1.1.0"
