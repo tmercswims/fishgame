@@ -5,6 +5,7 @@
 # imports
 # ---------------------------
 import codecs
+import copy
 import ctypes
 import json
 import os
@@ -33,71 +34,43 @@ class Settings(object):
     """Keeps all settings for Fish Game."""
 
     def __init__(self, file_path=None):
-        try:
-            with codecs.open(file_path, encoding="utf-8-sig", mode="r") as f:
-                self.__dict__ = json.load(f, encoding="utf-8")
-        except (TypeError, IOError):
-            # set defaults
-            self.start_command = "!fishgame"
-            self.start_permission = "Moderator"
-            self.start_message = (
-                "Yo we're about to do the fish minigame, guess how many fish I'll have by the end of the 3rd phase of "
-                "fish by typing \"{0} <number>\" in chat! Closest guess wins {1}! Exact guess gets VIP until the next "
-                "person guesses Exactly Right™ and {2}! If you HIGHLIGHT your guess, and you win, you get {3}x the "
-                "rewards! (Recommended guess: {4})"
-            )
+        self._file_path = file_path
 
-            self.guess_command = "!guess"
-            self.guess_duration = 75
-            self.guess_recommended_min = 70
-            self.guess_recommended_max = 100
-            self.guess_nogame_toggle = True
-            self.guess_nogame_message = "@{0} There is no active fish game."
-            self.guess_toolate_toggle = True
-            self.guess_toolate_message = "@{0} Sorry, you must place your guess within {1} seconds."
-            self.guess_taken_message = (
-                "@{0} Someone else already guessed {1}. Yours has been recorded, but you might want to change it."
-            )
-            self.guess_forme_toggle = True
-            self.guess_forme_message = "@{0} Your guess is {1}."
-            self.guess_forme_noneleft_message = "@{0} Sorry, all guesses have been taken."
+        ui_config_path = os.path.join(os.path.dirname(__file__), "UI_Config.json")
+        with codecs.open(ui_config_path, encoding="utf-8-sig", mode="r") as ui_config_file:
+            ui_config = json.load(ui_config_file, encoding='utf-8')
+        self._defaults = {k: v["value"] for (k, v) in ui_config.items() if k not in ["output_file", "reset_defaults"]}
 
-            self.end_command = "!endfish"
-            self.end_permission = "Moderator"
-            self.end_nogame_message = "@{0} There is no active fish game."
-            self.end_tie_message = "We have a tie! {0} are {1} off. Rolling for tiebreaker."
-            self.end_roll_message = "@{0} rolled a {1}!"
-            self.end_winner_message = (
-                "The fish game is over, with a phase 3 score of {2}. The winner is @{0}, with a guess of {1}! "
-                "They have been awarded {3}."
-            )
-            self.end_vip_message = (
-                "@{2}, @{0} just guessed exactly and needs to be given VIP! "
-                "The previous exact winner who should lose VIP is @{1}."
-            )
-            self.end_same_vip_message = (
-                "@{0} just guessed exactly, but they already have VIP from last time, so we're all good."
-            )
+        self.load()
 
-            self.reward_nonexact = 200
-            self.reward_exact = 400
-            self.reward_bonus_multiplier = 3.0
+    def __getattr__(self, item):
+        """Fallback for if self[item] is not defined."""
 
-            self.only_live = False
+        return self._defaults[item]
 
-    def reload(self, json_data):
+    def loads(self, json_data):
         """Replaces all settings with those from the given JSON string."""
 
-        self.__dict__ = json.loads(json_data, encoding="utf-8")
+        self._load(json.loads(json_data, encoding="utf-8"))
 
-    def save(self, file_path):
+    def load(self):
+        """Loads all settings from file."""
+
+        if self._file_path is not None:
+            try:
+                with codecs.open(self._file_path, encoding="utf-8-sig", mode="r") as f:
+                    self._load(json.load(f, encoding="utf-8"))
+            except IOError:
+                pass
+
+    def save(self):
         """Saves all settings to the given file."""
 
         try:
-            with codecs.open(file_path, encoding="utf-8-sig", mode="w+") as f:
-                json.dump(self.__dict__, f, encoding="utf-8")
-            with codecs.open(file_path.replace("json", "js"), encoding="utf-8-sig", mode="w+") as f:
-                f.write("var settings = {0};".format(json.dumps(self.__dict__, encoding='utf-8')))
+            with codecs.open(self._file_path, encoding="utf-8-sig", mode="w+") as f:
+                json.dump(self._dump(), f, encoding="utf-8")
+            with codecs.open(self._file_path.replace("json", "js"), encoding="utf-8-sig", mode="w+") as f:
+                f.write("var settings = {0};".format(json.dumps(self._dump(), encoding='utf-8')))
         except Exception as e:
             winsound.MessageBeep(winsound.MB_ICONHAND)
             ctypes.windll.user32.MessageBoxW(
@@ -108,18 +81,45 @@ class Settings(object):
             )
             Parent.Log(ScriptName, "Failed to save settings to file. " + str(e))
 
+    def reset(self):
+        """Resets all settings to the defaults."""
+
+        self._load(copy.deepcopy(self._defaults))
+
+    def _load(self, settings_dict):
+        """Loads setting from the given dictionary."""
+
+        file_path_backup = self._file_path
+        defaults_backup = self._defaults
+
+        self.__dict__ = settings_dict
+        self._file_path = file_path_backup
+        self._defaults = defaults_backup
+
+    def _dump(self):
+        """Dump all settings to a dictionary. Includes defaults if not explicitly set."""
+
+        temp = {k: v for (k, v) in self.__dict__.items() if not k.startswith("_")}
+        for (k, v) in self._defaults.items():
+            if k not in temp:
+                temp[k] = v
+
+        return temp
+
 
 class PreviousVIP(object):
     """Tracks the previous VIP, optionally backed by a file."""
 
     def __init__(self, file_path=None):
         self.file_path = file_path
+        self._username = ""
 
         if file_path is not None:
-            with codecs.open(file_path, encoding="utf-8-sig", mode="r") as f:
-                self._username = f.readline()
-        else:
-            self._username = ""
+            try:
+                with codecs.open(file_path, encoding="utf-8-sig", mode="r") as f:
+                    self._username = f.readline()
+            except IOError:
+                pass
 
     @property
     def username(self):
@@ -137,14 +137,12 @@ class PreviousVIP(object):
 # ---------------------------
 # global variables
 # ---------------------------
-settings_file = ""
 settings = Settings()
 
 entries = dict()
 game_state = 0
 start_time = 0
 
-previous_vip_file = ""
 previous_vip = PreviousVIP()
 
 global Parent
@@ -160,10 +158,9 @@ def ReloadSettings(json_data):
     """
 
     global settings
-    global settings_file
 
-    settings.reload(json_data)
-    settings.save(settings_file)
+    settings.loads(json_data)
+    settings.save()
 
 
 def restore_settings():
@@ -173,7 +170,6 @@ def restore_settings():
     """
 
     global settings
-    global settings_file
 
     winsound.MessageBeep(winsound.MB_ICONEXCLAMATION)
     return_value = ctypes.windll.user32.MessageBoxW(
@@ -184,8 +180,16 @@ def restore_settings():
     )
 
     if return_value == 6:
-        settings = Settings()
-        settings.save(settings_file)
+        settings.reset()
+        settings.save()
+        winsound.MessageBeep(winsound.MB_ICONEXCLAMATION)
+        ctypes.windll.user32.MessageBoxW(
+            0,
+            "All settings have been restored to their default values. Click away from this script (i.e. click on a "
+            "different one) and then click back to this one to refresh the values you see.",
+            "Default Settings Restored",
+            0
+        )
 
 
 # ---------------------------
@@ -198,9 +202,7 @@ def Init():
     """
 
     global previous_vip
-    global previous_vip_file
     global settings
-    global settings_file
 
     # load settings
     settings_file = os.path.join(os.path.dirname(__file__), "settings.json")
