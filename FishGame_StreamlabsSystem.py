@@ -571,15 +571,15 @@ def send_vip_message(winner_data):
         Parent.SendStreamMessage(settings.end_same_vip_message.format(winning_username))
         return
 
-    is_ineligible = False
+    winner_is_ineligible = False
     # the first part of the message is about the new exact winner
     if has_permission(winner_data.User, "moderator"):
         # exact guesser is a mod
-        is_ineligible = True
+        winner_is_ineligible = True
         first_part = settings.end_new_vip_message_mod.format(winning_username, Parent.GetChannelName())
     elif has_permission(winner_data.User, "vip exclusive"):
         # exact guesser is a VIP (and not the previous winner, that's checked before here)
-        is_ineligible = True
+        winner_is_ineligible = True
         first_part = settings.end_new_vip_message_vip.format(winning_username, Parent.GetChannelName())
     else:
         first_part = settings.end_new_vip_message.format(winning_username, Parent.GetChannelName())
@@ -588,13 +588,13 @@ def send_vip_message(winner_data):
     if previous_vip.username == "":
         # we don't have a previous exact winner
         second_part = ""
-        previous_vip.username = winning_username
+        previous_vip.username = "" if winner_is_ineligible else winning_username
     else:
         # we have a previous exact winner
-        if settings.end_new_vip_always_take_previous or not is_ineligible:
+        if (winner_is_ineligible and settings.end_new_vip_always_take_previous) or not winner_is_ineligible:
             # we take the previous exact winner's VIP
             second_part = settings.end_previous_vip_message_take.format(previous_vip.username)
-            previous_vip.username = winning_username
+            previous_vip.username = "" if winner_is_ineligible else winning_username
         else:
             # we don't take the previous exact winner's VIP
             second_part = settings.end_previous_vip_message_keep.format(previous_vip.username)
