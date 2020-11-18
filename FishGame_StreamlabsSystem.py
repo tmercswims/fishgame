@@ -24,7 +24,7 @@ ScriptName = "Fish Game"
 Website = "https://github.com/tmercswims/fishgame"
 Description = "Jak and Daxter fish game."
 Creator = "tmerc"
-Version = "1.2.0"
+Version = "1.2.1"
 
 
 # ---------------------------
